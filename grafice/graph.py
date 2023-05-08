@@ -1,4 +1,4 @@
-from matplotlib.pyplot import plot, show, xlabel, ylabel, ylim
+from matplotlib.pyplot import plot, show, xlabel, ylabel, ylim, legend
 from numpy import array
 
 xp = array([400, 600, 800, 1000, 1200])
@@ -22,4 +22,13 @@ plot(xp, yp_blas)
 xlabel("Test size")
 ylabel("BLAS Time")
 ylim(0, 30)
+show()
+
+plot(xp, yp_opt)
+plot(xp, yp_neopt)
+plot(xp, yp_blas)
+legend(["opt_m", "neopt", "blas"])
+xlabel("Test size")
+ylabel("Time")
+ylim(0,30)
 show()
