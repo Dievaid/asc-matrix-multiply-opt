@@ -1,0 +1,94 @@
+============ Capragiu David, Tema 2 ASC ============ 
+
+Optimizari generale aplicate in inmultirea matricelor
+
+    In fiecare implementare, s-a tinut cont de faptul ca
+A este superior triunghiulara, adica in toate implementarile
+au fost considerate pentru operatia de inmultire doar elementele
+de pe diagonala principala si cele deasupra acesteia.
+
+    1. A x B
+    In cazul acestei inmultiri singura optimizare aplicata este
+cea in care inmultirile sunt considerate daca ne aflam deasupra
+diagonalei principale sau pe aceasta, intrucat am parcurge zerouri
+nedorite care doar ar incetini executia
+
+    2. (A x B) x A'
+    Cum A este superior triunghiulara, A' este inferior triunghiulara
+Ceea ce inseamna ca in acest caz ar trebui sa efectuam operatia de
+inmultire pentru elementele de sub diagonala principala sau de pe aceasta.
+De asemenea, nu am mai calculat A', si am inversat indicii asociati liniei
+si coloanei pentru a obtine efectul transpunerii.
+
+    3. B'x B'
+    Singura optimizare aplicata pentru aceasta inmultire este faptul ca nu
+am mai calculat B' si am inversat si aici indicii in cadrul parcurgerii.
+
+
+    Aceste optimizari pe care le-am aplicat in varianta neopt
+au obtinut urmatoarele rezultate pe nehalem:
+    Run=./tema2_neopt: N=400: Time=1.103738
+    Run=./tema2_neopt: N=600: Time=3.659254
+    Run=./tema2_neopt: N=800: Time=9.305335
+    Run=./tema2_neopt: N=1000: Time=16.784485
+    Run=./tema2_neopt: N=1200: Time=29.525051
+
+
+Optimizari aplicate in opt_m
+
+    Optimizarile pe care le-am folosit aici sunt 
+majoritar legate de utilizarea registrilor pentru 
+variabilele declarate, folosirea referintelor pentru 
+a avea parcurgeri cache friendly, pe langa cele folosite
+ in variante neopt
+
+    Rezultatele pe care le-am obtinut pe nehalem
+pentru aceasta varianta arata astfel:
+    Run=./tema2_opt_m: N=400: Time=0.296790
+    Run=./tema2_opt_m: N=600: Time=0.956651
+    Run=./tema2_opt_m: N=800: Time=2.309975
+    Run=./tema2_opt_m: N=1000: Time=4.303251
+    Run=./tema2_opt_m: N=1200: Time=7.409517
+
+    Comparativ cu ce am obtinut in varianta neopt,
+varianta opt_m este de aproximativ 4 ori mai rapida
+
+Implementare CBlas
+
+    Din punctul meu de vedere, acesta este cel mai
+spectaculos rezultat obtinut, in care operatiile
+s-au efectuat "blazingly fast" (blas - blazing, 
+frumoasa asociere pot zice)
+
+    Rezultatele obtinute au fost:
+    Run=./tema2_blas: N=400: Time=0.039316
+    Run=./tema2_blas: N=600: Time=0.129759
+    Run=./tema2_blas: N=800: Time=0.282245
+    Run=./tema2_blas: N=1000: Time=0.557283
+    Run=./tema2_blas: N=1200: Time=0.927857
+
+    In acest caz, utilizarea BLAS a obtinut
+timpi de aproximativ 8 ori mai scurti pentru
+aceleasi input-uri rulate pe celelalte doua
+variante.
+
+    De asemenea, am inclus niste grafice cu aceste
+date, generate in matplotlib, in care putem observa
+aceasta diferenta.
+
+
+Analiza cache
+
+    Observand in prima faza rezultatele dintre neopt si opt_m,
+prima diferenta pe care am observat-o este diferenta numarului
+de accese la memorie (D Refs) caz pentru care in implementarea opt_m
+avem de aproximativ 6 ori mai putine accese la memorie decat in varianta
+neopt. In schimb, numarul de miss-uri pe care il prezinta aceste doua
+implementari este similar, rezultand intr-un miss rate mai mare pentru
+varianta opt. Totodata, numarul de mispredict-uri este acelasi intrucat
+nu avem conditii care ar putea afecta precizia branch predictorului.
+
+    Comparand implementarea blas cu cea opt_m, observam ca numarul
+de accese la memorie ( acesta este de 5 ori mai mic ), cat si miss rate-ul
+(0.1% pt blas, 19.9% pt opt) sunt substantial mai mici, lucru care se poate
+remarca oricum din viteza de executie.
